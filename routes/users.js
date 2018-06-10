@@ -8,11 +8,15 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
 router.get('/register', function(req, res){
-    res.render('register');
+    res.render('register', {
+        title: "Registration"
+    });
 });
 
 router.get('/login', function(req, res){
-    res.render('login');
+    res.render('login', {
+        title: "Login"
+    });
 });
 
 router.post('/register', function(req, res){
@@ -101,13 +105,15 @@ router.get('/logout', function(req, res){
 
 router.get('/profile', ensureAuthenticated, function(req, res){
     res.render('profile', {
-        userSess: req.session.username
+        userSess: req.session.username,
+        title: "User Profile"
     });
 });
 
 router.get('/profile/:username', ensureAuthenticated, function(req, res){
     res.render('editProfile', {
-        userSess: req.session.username
+        userSess: req.session.username,
+        title: "Edit Profile"
     });
 });
 

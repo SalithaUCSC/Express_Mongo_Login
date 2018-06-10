@@ -4,7 +4,8 @@ const router = express.Router();
 
 router.get('/', function(req, res){
     res.render('index', {
-        userSess: req.session.username
+        userSess: req.session.username,
+        title: "Node Site"
     });
 });
 
