@@ -3,7 +3,9 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', ensureAuthenticated, function(req, res){
-    res.render('index');
+    res.render('index', {
+        userSess: req.session.username
+    });
 });
 
 function ensureAuthenticated(req, res, next) {

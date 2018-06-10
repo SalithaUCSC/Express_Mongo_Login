@@ -88,13 +88,56 @@ passport.serializeUser(function(user, done) {
 
 router.post('/login',
     passport.authenticate('local', {succesRedirect: '/', failureRedirect: '/users/login', failureFlash: true}), function(req, res) {
-    res.redirect('/')
+    req.session.username = req.body.username;
+    res.redirect('/');
 });
  
 router.get('/logout', function(req, res){
     req.logout();
-    req.flash('success_msg', "You now logged out");
+    // req.flash('success_msg', "You now logged out");
+    req.session.destroy(); 
     res.redirect('/users/login');
 });
+
+router.get('/profile', ensureAuthenticated, function(req, res){
+    res.render('profile', {
+        userSess: req.session.username
+    });
+});
+
+router.get('/profile/:username', ensureAuthenticated, function(req, res){
+    res.render('editProfile', {
+        userSess: req.session.username
+    });
+});
+
+router.post('/update/:id', function (req, res) {
+    let user = {};
+    user.username = req.body.username;
+    user.fullname = req.body.fullname;
+    user.email = req.body.email;
+    
+    let query = { _id: req.params.id }
+
+    User.update(query, user, function(err){
+        if(err){
+            console.log(err);
+            return;
+        }
+        else{
+            req.flash("success_msg", "User Updated Successfully");
+            res.redirect('/users/profile');
+        }
+    });
+});
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    else {
+        res.redirect('/users/login');
+    }
+}
 
 module.exports = router;
